@@ -4,8 +4,10 @@ module.exports = {
         id: {
           primaryKey: true,
           type: Sequelize.INTEGER,
+          autoIncrement: true,
+          allowNull: false,
         },
-        teamName: {
+        team_name: {
           type: Sequelize.STRING,
         }
       });

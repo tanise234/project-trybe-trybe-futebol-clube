@@ -1,30 +1,43 @@
-import { Model } from 'sequelize';
+import { INTEGER, Model, STRING } from 'sequelize';
 import db from '.';
+import Match from './Match';
 // import OtherModel from './OtherModel';
 
-class Example extends Model {
+class Team extends Model {
+  declare id: number;
+  declare teamName: string;
   // declare <campo>: <tipo>;
 }
 
-Example.init({
+Team.init({
+  id: {
+    type: INTEGER,
+    allowNull: false,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  teamName: {
+    type: STRING,
+    allowNull: false,
+  },
   // ... Campos
 }, {
   // ... Outras configs
   underscored: true,
   sequelize: db,
-  // modelName: 'example',
+  modelName: 'teams',
   timestamps: false,
 });
 
 /**
-  * `Workaround` para aplicar as associations em TS: 
+  * `Workaround` para aplicar as associations em TS:
   * Associations 1:N devem ficar em uma das instâncias de modelo
   * */
 
-// OtherModel.belongsTo(Example, { foreignKey: 'campoA', as: 'campoEstrangeiroA' });
-// OtherModel.belongsTo(Example, { foreignKey: 'campoB', as: 'campoEstrangeiroB' });
+// OtherModel.belongsTo(Team, { foreignKey: 'campoA', as: 'campoEstrangeiroA' });
+// OtherModel.belongsTo(Team, { foreignKey: 'campoB', as: 'campoEstrangeiroB' });
 
-// Example.hasMany(OtherModel, { foreignKey: 'campoC', as: 'campoEstrangeiroC' });
-// Example.hasMany(OtherModel, { foreignKey: 'campoD', as: 'campoEstrangeiroD' });
+Team.hasMany(Match, { foreignKey: 'id', as: 'home_team' });
+Team.hasMany(Match, { foreignKey: 'id', as: 'away_team' });
 
-export default Example;
+export default Team;

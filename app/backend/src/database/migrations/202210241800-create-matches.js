@@ -2,22 +2,32 @@ module.exports = {
     up: async (queryInterface, Sequelize) => {
       await queryInterface.createTable('matches', {
         id: {
+          type: Sequelize.INTEGER,
           primaryKey: true,
+          autoIncrement: true,
+          allowNull: false,
+        },
+        home_team: {
+          type: Sequelize.INTEGER,
+          references: {
+            model: 'teams',
+            key: 'id',
+          }
+        },
+        home_team_goals: {
           type: Sequelize.INTEGER,
         },
-        homeTeam: {
+        away_team: {
+          type: Sequelize.INTEGER,
+          references: {
+            model: 'teams',
+            key: 'id',
+          }
+        },
+        away_team_goals: {
           type: Sequelize.INTEGER,
         },
-        homeTeamGoals: {
-          type: Sequelize.INTEGER,
-        },
-        awayTeam: {
-          type: Sequelize.INTEGER,
-        },
-        awayTeamGoals: {
-          type: Sequelize.INTEGER,
-        },
-        inProgress: {
+        in_progress: {
           type: Sequelize.INTEGER,
         }
       });
