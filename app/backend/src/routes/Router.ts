@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import { validate } from '../middlewares/loginMiddleware';
+import { fisrtValidation } from '../middlewares/loginMiddleware';
 
 const loginRouter = Router();
 const matchRouter = Router();
 
-loginRouter.post('/login', validate);
+loginRouter.post('/login', fisrtValidation);
 
 export {
   loginRouter,
