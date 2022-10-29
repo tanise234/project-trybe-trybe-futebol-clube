@@ -5,4 +5,9 @@ export default class TeamService {
     const teams = await Team.findAll();
     return teams;
   };
+
+  getById = async (id: number) => {
+    const team = await Team.findOne({ where: { id } });
+    return team;
+  };
 }

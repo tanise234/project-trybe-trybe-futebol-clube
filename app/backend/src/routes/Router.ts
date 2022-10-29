@@ -13,6 +13,7 @@ loginRouter.post('/login', validateFields, loginController.verify);
 loginRouter.get('/login/validate', validateToken, loginController.getRole);
 
 teamRouter.get('/teams', teamController.getAll);
+teamRouter.get('/teams/:id', teamController.getById);
 
 const matchRouter = Router();
 export {
