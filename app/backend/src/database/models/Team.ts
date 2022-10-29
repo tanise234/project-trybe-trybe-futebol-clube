@@ -1,6 +1,5 @@
-import { INTEGER, Model, STRING } from 'sequelize';
+import { Model, INTEGER, STRING } from 'sequelize';
 import db from '.';
-import Match from './Match';
 // import OtherModel from './OtherModel';
 
 class Team extends Model {
@@ -36,8 +35,5 @@ Team.init({
 
 // OtherModel.belongsTo(Team, { foreignKey: 'campoA', as: 'campoEstrangeiroA' });
 // OtherModel.belongsTo(Team, { foreignKey: 'campoB', as: 'campoEstrangeiroB' });
-
-Team.hasMany(Match, { foreignKey: 'id', as: 'home_team' });
-Team.hasMany(Match, { foreignKey: 'id', as: 'away_team' });
 
 export default Team;
