@@ -12,8 +12,15 @@ export default class MatchService {
     return matches;
   };
 
-  // getByQuery = async (id: number) => {
-  //   const match = await Match.findOne({ where: { id } });
-  //   return match;
-  // };
+  getAllByProgress = async (status: string) => {
+    const inProgress = JSON.parse(status);
+    const matches = await Match.findAll({
+      include: [
+        { model: Team, as: 'teamHome', attributes: ['teamName'] },
+        { model: Team, as: 'teamAway', attributes: ['teamName'] },
+      ],
+      where: { inProgress },
+    });
+    return matches;
+  };
 }
