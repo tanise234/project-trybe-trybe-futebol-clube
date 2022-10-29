@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import InvalidParamError from '../errors/invalid-param-error';
+import TokenManager from '../utils/TokenManager';
 
 const test = () => console.log('middleware accessed');
 
@@ -13,7 +14,7 @@ const validEmail = (email: string): boolean => {
   return format.test(email);
 };
 
-const fisrtValidation = (req: Request, res: Response, next: NextFunction) => {
+const validateFields = (req: Request, res: Response, next: NextFunction) => {
   const { email, password } = req.body;
   if (!password || !email) {
     return res.status(400).json({ message: 'All fields must be filled' });
@@ -24,4 +25,15 @@ const fisrtValidation = (req: Request, res: Response, next: NextFunction) => {
   next();
 };
 
-export { fisrtValidation, test };
+const validateToken = (req: Request, res: Response) => {
+  const { authorization } = req.headers;
+  if (!authorization) {
+    throw new InvalidParamError('Token not found');
+  }
+
+  const role = TokenManager.authenticateToken(authorization);
+  console.log(role);
+  return res.status(200).json({ role: `${role}` });
+};
+
+export { validateFields, validateToken };

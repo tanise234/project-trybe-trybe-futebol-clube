@@ -14,11 +14,7 @@ export default class TokenManager {
     return token;
   };
 
-  static authenticateToken = async (token: string | undefined) => {
-    if (!token) {
-      throw new InvalidParamError('Token not found');
-    }
-
+  static authenticateToken = async (token: string) => {
     try {
       const validateToken = jwt.verify(token, secret);
       return validateToken;
