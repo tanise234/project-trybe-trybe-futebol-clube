@@ -7,7 +7,7 @@ const loginController = new LoginController();
 const matchRouter = Router();
 
 loginRouter.post('/login', validateFields, loginController.verify);
-loginRouter.get('/login/validate', validateToken);
+loginRouter.get('/login/validate', validateToken, loginController.getRole);
 
 export {
   loginRouter,

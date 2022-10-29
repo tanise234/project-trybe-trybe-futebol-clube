@@ -1,6 +1,7 @@
 import * as jwt from 'jsonwebtoken';
 import 'dotenv/config';
 import InvalidParamError from '../errors/invalid-param-error';
+import { IData } from '../interfaces';
 
 const secret = process.env.JWT_SECRET || ('jwt_secret' as jwt.Secret);
 
@@ -14,10 +15,11 @@ export default class TokenManager {
     return token;
   };
 
-  static authenticateToken = async (token: string) => {
+  static checkToken = async (token: string) => {
     try {
-      const validateToken = jwt.verify(token, secret);
-      return validateToken;
+      const result = jwt.decode(token);
+      const { data } = result as IData;
+      return data;
     } catch (error) {
       throw new InvalidParamError('Expired or invalid token');
     }
