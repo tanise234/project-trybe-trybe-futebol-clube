@@ -23,4 +23,15 @@ export default class MatchController {
       next(error);
     }
   };
+
+  matchInProgress = async (req:Request, res: Response, next: NextFunction) => {
+    try {
+      const { homeTeam, homeTeamGoals, awayTeam, awayTeamGoals } = req.body;
+      const match = await this.matchService
+        .matchInProgress(homeTeam, homeTeamGoals, awayTeam, awayTeamGoals);
+      return res.status(201).json(match);
+    } catch (error) {
+      next(error);
+    }
+  };
 }

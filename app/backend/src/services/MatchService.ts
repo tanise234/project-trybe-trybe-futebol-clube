@@ -23,4 +23,17 @@ export default class MatchService {
     });
     return matches;
   };
+
+  matchInProgress = async (
+    homeTeam: number,
+    homeTeamGoals: number,
+    awayTeam: number,
+    awayTeamGoals: number,
+  ) => {
+    const match = await Match.findOne({ where:
+      { homeTeam, awayTeam },
+    });
+    if (match) await match.update({ homeTeamGoals, awayTeamGoals, inProgress: true });
+    return match;
+  };
 }

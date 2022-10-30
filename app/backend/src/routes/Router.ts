@@ -19,6 +19,7 @@ teamRouter.get('/teams', teamController.getAll);
 teamRouter.get('/teams/:id', teamController.getById);
 
 matchRouter.get('/matches', matchController.getAll);
+matchRouter.post('/matches', validateToken, matchController.matchInProgress);
 
 export {
   loginRouter,
