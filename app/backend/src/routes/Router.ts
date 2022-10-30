@@ -20,6 +20,7 @@ teamRouter.get('/teams/:id', teamController.getById);
 
 matchRouter.get('/matches', matchController.getAll);
 matchRouter.post('/matches', validateToken, matchController.matchInProgress);
+matchRouter.patch('/matches/:id/finish', matchController.matchFinished);
 
 export {
   loginRouter,

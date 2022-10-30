@@ -36,4 +36,8 @@ export default class MatchService {
     if (match) await match.update({ homeTeamGoals, awayTeamGoals, inProgress: true });
     return match;
   };
+
+  matchFinished = async (id: number) => {
+    await Match.update({ inProgress: false }, { where: { id } });
+  };
 }
