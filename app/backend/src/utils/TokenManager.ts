@@ -12,7 +12,7 @@ export default class TokenManager {
       algorithm: 'HS256',
     };
     const token = jwt.sign({ data: payload }, secret, jwtConfig);
-    return token;
+    return { token };
   };
 
   static checkToken = async (token: string) => {
@@ -21,7 +21,7 @@ export default class TokenManager {
       const { data } = result as IData;
       return data;
     } catch (error) {
-      throw new InvalidParamError('Expired or invalid token');
+      throw new InvalidParamError('Token must be a valid token');
     }
   };
 }

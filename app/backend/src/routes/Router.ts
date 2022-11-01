@@ -3,6 +3,7 @@ import LoginController from '../controllers/LoginController';
 import TeamController from '../controllers/TeamController';
 import MatchController from '../controllers/MatchController';
 import { validateFields, validateToken } from '../middlewares/loginMiddleware';
+import { validateTeams } from '../middlewares/matchMiddleware';
 
 const loginRouter = Router();
 const teamRouter = Router();
@@ -19,7 +20,7 @@ teamRouter.get('/teams', teamController.getAll);
 teamRouter.get('/teams/:id', teamController.getById);
 
 matchRouter.get('/matches', matchController.getAll);
-matchRouter.post('/matches', validateToken, matchController.matchInProgress);
+matchRouter.post('/matches', validateToken, validateTeams, matchController.matchInProgress);
 matchRouter.patch('/matches/:id/finish', matchController.matchFinished);
 
 export {
