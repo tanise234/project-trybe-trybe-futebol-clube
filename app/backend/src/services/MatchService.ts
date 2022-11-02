@@ -48,10 +48,9 @@ export default class MatchService {
     await this.teamExist(homeTeam);
     await this.teamExist(awayTeam);
 
-    const match = await Match.findOne({ where:
-      { homeTeam, awayTeam },
-    });
-    if (match) await match.update({ homeTeamGoals, awayTeamGoals, inProgress: true });
+    const match = await Match.create(
+      { homeTeamGoals, awayTeamGoals, homeTeam, awayTeam, inProgress: true },
+    );
     return match;
   };
 
