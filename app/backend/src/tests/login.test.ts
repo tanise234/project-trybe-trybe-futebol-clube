@@ -1,12 +1,11 @@
 import * as sinon from 'sinon';
 import * as chai from 'chai';
 // @ts-ignore
-import chaiHttp from 'chai-http';
-
+import chaiHttp = require('chai-http');
 import * as bcrypt from 'bcryptjs';
+
 import { app } from '../app';
 import User from '../database/models/User';
-import Example from '../database/models/ExampleModel';
 
 import { Response } from 'superagent';
 
@@ -15,7 +14,6 @@ chai.use(chaiHttp);
 const { expect } = chai;
 
 describe('Verififca o funcionamento do método POST na rota /login', () => {
-
     it('Verifica se retorna status 400 e mensagem "All fields must be filled" caso o campo "email" não esteja preenchido', async ()=> {
         const response = { message: 'All fields must be filled'};
         const HTTPResponse = await chai.request(app).post('/login').send({ password: '123456'})
@@ -31,8 +29,8 @@ describe('Verififca o funcionamento do método POST na rota /login', () => {
     });
 
     describe('Verifica se retorna status 401 e mensagem "Incorrect email or password" caso o campo "email" esteja incorreto', ()=> {
-        before(() => sinon.stub(User, 'findOne').resolves(null))
-        after(() => sinon.restore())
+        beforeEach(() => sinon.stub(User, 'findOne').resolves(null))
+        afterEach(() => sinon.restore())
         it('Test', async () => {
             const response = { message: 'Incorrect email or password'};
             const HTTPResponse = await chai.request(app).post('/login').send({ email: 'error@error.com', password: 'secret_admin'})
@@ -45,9 +43,9 @@ describe('Verififca o funcionamento do método POST na rota /login', () => {
         const user = { id: 1, username: 'error_user', email: 'email@mail.com', password: '123456' }
         const response = { message: 'Incorrect email or password'}
 
-        before(() => sinon.stub(User, 'findOne').resolves(user as User))
-        before(() => sinon.stub(bcrypt, 'compare').resolves(false))
-        after(() => sinon.restore())
+        beforeEach(() => sinon.stub(User, 'findOne').resolves(user as User))
+        beforeEach(() => sinon.stub(bcrypt, 'compare').resolves(false))
+        afterEach(() => sinon.restore())
 
         it('Test', async () => {
             const response = { message: 'Incorrect email or password'};
