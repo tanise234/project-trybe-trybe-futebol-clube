@@ -30,19 +30,17 @@ describe('GET /teams', () => {
       })
 
 
-    describe('Teste caso requisição get na rota /teams seja feita com sucesso',()=> {
-        it('Deve retornar um status 200 e uma lista de times', async () => {
-          const HTTPResponse = await chai.request(app).get('/teams')
-          expect(HTTPResponse.status).to.be.equal(200);
-          expect(HTTPResponse.body).to.be.deep.equal(teams)
-        });
+    describe('Verifica se retorna status 200 em caso de sucesso:',()=> {
+      it('- e retorna uma lista de times na rota /teams', async () => {
+        const HTTPResponse = await chai.request(app).get('/teams')
+        expect(HTTPResponse.status).to.be.equal(200);
+        expect(HTTPResponse.body).to.be.deep.equal(teams)
       });
-    
-      describe('Teste caso requisição get na rota /teams/:id seja feita com sucesso', ()=> {
-        it('Deve retornar um status 200 e um time', async () => {
-          const HTTPResponse = await chai.request(app).get('/teams/1')
-          expect(HTTPResponse.status).to.be.equal(200);
-          expect(HTTPResponse.body).to.be.deep.equal(teams[0]);
-        });
+      
+      it('- e retorna um time na rota /teams/:id', async () => {
+        const HTTPResponse = await chai.request(app).get('/teams/1')
+        expect(HTTPResponse.status).to.be.equal(200);
+        expect(HTTPResponse.body).to.be.deep.equal(teams[0]);
       });
+    });
   });

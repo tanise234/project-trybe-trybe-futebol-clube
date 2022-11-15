@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import LoginController from '../controllers/LoginController';
+import UserController from '../controllers/UserController';
 import TeamController from '../controllers/TeamController';
 import MatchController from '../controllers/MatchController';
 import LeaderboardController from '../controllers/LeaderboardController';
@@ -11,13 +11,13 @@ const teamRouter = Router();
 const matchRouter = Router();
 const leaderboardRouter = Router();
 
-const loginController = new LoginController();
+const userController = new UserController();
 const teamController = new TeamController();
 const matchController = new MatchController();
 const leaderboardController = new LeaderboardController();
 
-loginRouter.post('/login', validateFields, loginController.verify);
-loginRouter.get('/login/validate', validateToken, loginController.getRole);
+loginRouter.post('/login', validateFields, userController.verify);
+loginRouter.get('/login/validate', validateToken, userController.getRole);
 
 teamRouter.get('/teams', teamController.getAll);
 teamRouter.get('/teams/:id', teamController.getById);

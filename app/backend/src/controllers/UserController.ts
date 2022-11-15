@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { IData } from '../interfaces';
 import UserService from '../services/UserService';
 
-export default class LoginController {
+export default class UserController {
   userService: UserService;
 
   constructor() {

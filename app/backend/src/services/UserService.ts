@@ -12,8 +12,6 @@ export default class UserService {
     }
     const passwordValid = compareSync(password, user.password);
     if (!passwordValid) {
-      console.log('linha 15');
-
       throw new InvalidParamError('Incorrect email or password');
     }
 
