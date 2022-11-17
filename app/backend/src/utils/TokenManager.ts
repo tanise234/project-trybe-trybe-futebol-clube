@@ -15,7 +15,7 @@ export default class TokenManager {
     return { token };
   };
 
-  static checkToken = async (token: string) => {
+  static checkToken = (token: string) => {
     try {
       const result = jwt.decode(token);
       const { data } = result as IData;

@@ -32,7 +32,7 @@ const validateToken = async (req: IData, res: Response, next: NextFunction) => {
       throw new InvalidParamError('Token not found');
     }
 
-    const user = await TokenManager.checkToken(authorization);
+    const user = TokenManager.checkToken(authorization);
     if (!user) {
       throw new InvalidParamError('Token not found');
     }

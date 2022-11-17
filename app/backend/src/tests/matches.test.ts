@@ -52,13 +52,14 @@ describe('GET /matches', () => {
 
 describe('POST /matches', () => {
   describe('Verifica se retorna status 401 e mensagem "Token not found" caso:', () => {
+    afterEach(() => sinon.restore());
     it('- o token não seja encontrado', async ()=> {
       const HTTPResponse = await chai.request(app).post('/matches');
       expect(HTTPResponse.status).to.be.equal(401);
       expect(HTTPResponse.body).to.deep.equal({message: 'Token not found'});
     });
-    it('- o token não seja inválido', async ()=> {
-      sinon.stub(TokenManager, 'checkToken').resolves(undefined);
+    it('- o token não seja válido', async ()=> {
+      sinon.stub(TokenManager, 'checkToken').returns(undefined);
 
       const HTTPResponse = await chai.request(app).post('/matches').set('authorization', 'any_token');
       expect(HTTPResponse.status).to.be.equal(401);
@@ -69,7 +70,7 @@ describe('POST /matches', () => {
   describe('Verifica se retorna status 422 e mensagem "It is not possible to create a match with two equal teams" caso:', () => {
     it('- homeTeam e awayTeam sejam o mesmo time', async ()=> {
       sinon.stub(Match, "create").resolves(allMatches[0] as IMatch[] | any);
-      sinon.stub(jwt, 'verify').resolves({ id: 1 });
+      sinon.stub(TokenManager, 'checkToken').returns({ role: 1 });
       const body = {
         "homeTeam": 5,
         "awayTeam": 5,
@@ -77,7 +78,7 @@ describe('POST /matches', () => {
         "awayTeamGoals": 0
       };
 
-      const HTTPResponse = await chai.request(app).post('/matches').set('Authorization', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImVtYWlsIjoiYWRtaW5AYWRtaW4uY29tIiwiaWQiOjEsInJvbGUiOiJhZG1pbiJ9LCJpYXQiOjE2Njg0NzkxNzEsImV4cCI6MTY2ODU2NTU3MX0.jKXvs4rPzBqzEJlgTkXlNHlFt3jFu-YVDKyRghrZPSc').send(body);
+      const HTTPResponse = await chai.request(app).post('/matches').set('authorization', 'validToken').send(body);
       expect(HTTPResponse.status).to.be.equal(422);
       expect(HTTPResponse.body).to.deep.equal({message: 'It is not possible to create a match with two equal teams'});
     });
