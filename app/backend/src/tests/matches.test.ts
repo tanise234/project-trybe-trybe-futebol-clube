@@ -119,7 +119,8 @@ describe('POST /matches', () => {
         "homeTeam": 1,
         "awayTeam": 2,
         "homeTeamGoals": 3,
-        "awayTeamGoals": 4
+        "awayTeamGoals": 4,
+        "inProgress": true
       };
 
       const HTTPResponse = await chai.request(app).post('/matches').set('authorization', 'validToken').send(body);
@@ -131,16 +132,30 @@ describe('POST /matches', () => {
 });
 
 describe('PATCH /matches/:id/finish', () => {
-  describe('Verifica se retorna status 401 e mensagem "Token not found" caso:', () => {
-    it('- o token não seja encontrado', async ()=> {
+  describe('Verifica se retorna status 200 e mensagem "Finished" caso:', () => {
+    afterEach(() => sinon.restore());
+    it('- mude o status da partida para finalizada', async ()=> {
+      sinon.stub(Match, 'update').resolves([1] as any);
       
+      const HTTPResponse = await chai.request(app).patch('/matches/1/finish');
+      expect(HTTPResponse.status).to.be.equal(200);
+      expect(HTTPResponse.body).to.deep.equal({ message: 'Finished' });
     });
   });
 });
 describe('PATCH /matches/:id', () => {
-  describe('Verifica se retorna status 401 e mensagem "Token not found" caso:', () => {
-    it('- o token não seja encontrado', async ()=> {
+  describe('Verifica se retorna status 200 e a partida atualizada" caso:', () => {
+    afterEach(() => sinon.restore());
+    it('- mude o status da partida para não finalizada', async ()=> {
+      const body = {
+        "homeTeamGoals": 1,
+        "awayTeamGoals": 2
+      }
+      sinon.stub(Match, 'update').resolves([1] as any);
       
+      const HTTPResponse = await chai.request(app).patch('/matches/1').send(body);
+      expect(HTTPResponse.status).to.be.equal(200);
+      expect(HTTPResponse.body).to.deep.equal([1]);
     });
   });
 });
