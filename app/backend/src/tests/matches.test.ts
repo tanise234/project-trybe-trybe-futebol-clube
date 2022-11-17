@@ -16,6 +16,7 @@ import { validateTeams } from '../middlewares/matchMiddleware';
 import { NextFunction } from 'express';
 import { validateToken } from '../middlewares/loginMiddleware';
 import { JsonWebTokenError } from 'jsonwebtoken';
+import Team from '../database/models/Team';
 
 chai.use(chaiHttp);
 
@@ -68,8 +69,8 @@ describe('POST /matches', () => {
   });
 
   describe('Verifica se retorna status 422 e mensagem "It is not possible to create a match with two equal teams" caso:', () => {
+    afterEach(() => sinon.restore());
     it('- homeTeam e awayTeam sejam o mesmo time', async ()=> {
-      sinon.stub(Match, "create").resolves(allMatches[0] as IMatch[] | any);
       sinon.stub(TokenManager, 'checkToken').returns({ role: 1 });
       const body = {
         "homeTeam": 5,
@@ -83,6 +84,50 @@ describe('POST /matches', () => {
       expect(HTTPResponse.body).to.deep.equal({message: 'It is not possible to create a match with two equal teams'});
     });
   });
+
+  describe('Verifica se retorna status 404 e mensagem "There is no team with such id!" caso:', () => {
+    afterEach(() => sinon.restore());
+    it('- homeTeam e/ou awayTeam não existam', async ()=> {
+      sinon.stub(Team, 'findOne').resolves(null);
+      sinon.stub(TokenManager, 'checkToken').returns({ role: 1 });
+      const body = {
+        "homeTeam": 999,
+        "awayTeam": 9999,
+        "homeTeamGoals": 0,
+        "awayTeamGoals": 0
+      };
+
+      const HTTPResponse = await chai.request(app).post('/matches').set('authorization', 'validToken').send(body);
+      expect(HTTPResponse.status).to.be.equal(404);
+      expect(HTTPResponse.body).to.deep.equal({message: 'There is no team with such id!'});
+    });
+  });
+
+  describe('Verifica se retorna status 201 e mensagem "There is no team with such id!" caso:', () => {
+    afterEach(() => sinon.restore());
+    it('- homeTeam e awayTeam existam', async ()=> {
+      const match = {
+        "id": 1,
+        "homeTeam": 1,
+        "awayTeam": 2,
+        "homeTeamGoals": 3,
+        "awayTeamGoals": 4
+      };
+      sinon.stub(Match, 'create').resolves(match as IMatch[] | any);
+      sinon.stub(TokenManager, 'checkToken').returns({ role: 1 });
+      const body = {
+        "homeTeam": 1,
+        "awayTeam": 2,
+        "homeTeamGoals": 3,
+        "awayTeamGoals": 4
+      };
+
+      const HTTPResponse = await chai.request(app).post('/matches').set('authorization', 'validToken').send(body);
+      expect(HTTPResponse.status).to.be.equal(201);
+      expect(HTTPResponse.body).to.deep.equal(match);
+    });
+  });
+
 });
 
 describe('PATCH /matches/:id/finish', () => {
