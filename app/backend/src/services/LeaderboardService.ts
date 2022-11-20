@@ -1,63 +1,52 @@
-import sequelize = require('sequelize');
-import Team from '../database/models/Team';
-import Match from '../database/models/Match';
-// import NotFoundError from '../errors/not-found-error';
+import { QueryTypes } from 'sequelize';
+// import Team from '../database/models/Team';
+// import Match from '../database/models/Match';
 import TeamService from './TeamService';
+import sequelizeModel from '../database/models';
+
+const basicData = (target: string, opposite: string) =>
+  `SELECT team_name AS name,
+COUNT(*) AS totalGames,
+SUM(${target}_team_goals > ${opposite}_team_goals) AS totalVictories,
+SUM(${target}_team_goals = ${opposite}_team_goals) AS totalDraws,
+SUM(${target}_team_goals < ${opposite}_team_goals) AS totalLosses,
+SUM(${target}_team_goals) AS goalsFavor,
+SUM(${opposite}_team_goals) AS goalsOwn,
+SUM(${target}_team_goals - ${opposite}_team_goals) AS goalsBalance
+FROM TRYBE_FUTEBOL_CLUBE.matches AS m
+INNER JOIN TRYBE_FUTEBOL_CLUBE.teams AS t
+ON m.${target}_team = t.id
+WHERE m.in_progress = 0
+GROUP BY m.${target}_team`;
+
+const order = `ORDER BY
+totalPoints DESC,
+totalVictories DESC,
+goalsBalance DESC,
+goalsFavor DESC,
+goalsOwn`;
+
+const complexData = (basic: string) =>
+  `SELECT *,
+  (3 * totalVictories + totalDraws) AS totalPoints,
+  ROUND(((3 * totalVictories + totalDraws) / (3 * totalGames)) * 100, 2) AS efficiency
+  FROM (${basic}) AS basicBoard
+  ${order}`;
 
 export default class LeaderboardService {
   teamService: TeamService;
+  modelSequelize;
 
   constructor() {
     this.teamService = new TeamService();
+    this.modelSequelize = sequelizeModel;
   }
 
-  gamesInfo = async () => {
-    const info = await Match.findAll({
-      where: { inProgress: false },
-      attributes: ['homeTeam',
-        [sequelize.fn('count', sequelize.col('home_team')), 'totalGames'],
-        [sequelize.fn('sum', sequelize
-          .literal('home_team_goals > away_team_goals')), 'totalVictories'],
-        [sequelize.fn('sum', sequelize
-          .literal('home_team_goals = away_team_goals')), 'totalDraws'],
-        [sequelize.fn('sum', sequelize
-          .literal('home_team_goals < away_team_goals')), 'totalLosses'],
-      ],
-      group: ['homeTeam'],
-      raw: true,
-    });
-    return info;
-  };
-
   getAll = async () => {
-    const info = await Match.findAll({
-      where: { inProgress: false },
-      attributes: ['homeTeam',
-        [sequelize.fn('sum', sequelize.col('home_team_goals')), 'goalsFavor'],
-        [sequelize.fn('sum', sequelize.col('away_team_goals')), 'goalsOwn'],
-        [sequelize.fn('sum', sequelize
-          .literal('home_team_goals - away_team_goals')), 'goalsBalance'],
-      ],
-      group: ['homeTeam'],
-    });
-    return info;
-  };
-
-  getAllj = async () => {
-    const info = await Match.findAll({
-      where: { inProgress: false },
-      order: [['homeTeam', 'DESC']],
-      include: [
-        { model: Team, as: 'teamHome', attributes: ['teamName'] },
-      ],
-      attributes: ['homeTeam',
-        [sequelize.fn('sum', sequelize.col('home_team_goals')), 'goalsFavor'],
-        [sequelize.fn('sum', sequelize.col('away_team_goals')), 'goalsOwn'],
-        [sequelize.fn('sum', sequelize
-          .literal('home_team_goals - away_team_goals')), 'goalsBalance'],
-      ],
-      group: ['homeTeam'],
-    });
-    return info;
+    const result = await this.modelSequelize.query(
+      complexData(basicData('home', 'away')),
+      { type: QueryTypes.SELECT },
+    );
+    return result;
   };
 }

@@ -16,22 +16,4 @@ export default class TeamController {
       next(error);
     }
   };
-
-  // getAllHome = async (req:Request, res: Response, next: NextFunction) => {
-  //   try {
-  //     const leaderboard = await this.leaderboardService.getAllHome();
-  //     return res.status(200).json(leaderboard);
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // };
-
-  // getAllAway = async (req:Request, res: Response, next: NextFunction) => {
-  //   try {
-  //     const leaderboard = await this.leaderboardService.getAllAway();
-  //     return res.status(200).json(leaderboard);
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // };
 }

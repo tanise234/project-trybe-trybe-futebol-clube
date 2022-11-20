@@ -29,7 +29,7 @@ matchRouter.patch('/matches/:id', matchController.matchUpdate);
 
 // leaderboardRouter.get('/leaderboard/home', leaderboardController.getAllHome);
 // leaderboardRouter.get('/leaderboard/away', leaderboardController.getAllAway);
-leaderboardRouter.get('/leaderboard', leaderboardController.getAll);
+leaderboardRouter.get('/leaderboard/home', leaderboardController.getAll);
 
 export {
   loginRouter,
