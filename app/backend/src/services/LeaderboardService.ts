@@ -1,7 +1,4 @@
 import { QueryTypes } from 'sequelize';
-// import Team from '../database/models/Team';
-// import Match from '../database/models/Match';
-import TeamService from './TeamService';
 import sequelizeModel from '../database/models';
 
 const basicData = (target: string, opposite: string) =>
@@ -34,17 +31,15 @@ const complexData = (basic: string) =>
   ${order}`;
 
 export default class LeaderboardService {
-  teamService: TeamService;
   modelSequelize;
 
   constructor() {
-    this.teamService = new TeamService();
     this.modelSequelize = sequelizeModel;
   }
 
-  getAll = async () => {
+  getAll = async (...teams: string[]) => {
     const result = await this.modelSequelize.query(
-      complexData(basicData('home', 'away')),
+      complexData(basicData(teams[0], teams[1])),
       { type: QueryTypes.SELECT },
     );
     return result;
