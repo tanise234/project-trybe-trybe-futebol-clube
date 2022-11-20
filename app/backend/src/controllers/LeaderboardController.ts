@@ -25,4 +25,13 @@ export default class TeamController {
       next(error);
     }
   };
+
+  getAllTeams = async (req:Request, res: Response, next: NextFunction) => {
+    try {
+      const leaderboard = await this.leaderboardService.getAll();
+      return res.status(200).json(leaderboard);
+    } catch (error) {
+      next(error);
+    }
+  };
 }

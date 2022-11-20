@@ -27,10 +27,9 @@ matchRouter.post('/matches', validateToken, validateTeams, matchController.match
 matchRouter.patch('/matches/:id/finish', matchController.matchFinished);
 matchRouter.patch('/matches/:id', matchController.matchUpdate);
 
-// leaderboardRouter.get('/leaderboard/home', leaderboardController.getAllHome);
-// leaderboardRouter.get('/leaderboard/away', leaderboardController.getAllAway);
 leaderboardRouter.get('/leaderboard/home', leaderboardController.getHomeTeams);
 leaderboardRouter.get('/leaderboard/away', leaderboardController.getAwayTeams);
+leaderboardRouter.get('/leaderboard', leaderboardController.getAllTeams);
 
 export {
   loginRouter,
